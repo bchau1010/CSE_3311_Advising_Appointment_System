@@ -45,7 +45,9 @@ const studentSchema = mongoose.Schema(
                 type: String,
                 required: false
             }
-        }
+        },
+        appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }],
+
     }
 );
 
