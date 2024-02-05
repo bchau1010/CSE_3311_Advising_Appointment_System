@@ -1,20 +1,25 @@
 import {useState} from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
+
 
 const LoginForm = () => {
     const [email,setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [redirect, setRedirect] = useState(false);
     async function handleLogin(event){
         event.preventDefault();
         try {
             await axios.post('/student/login', {email,password});
             alert('Login success!');
+            setRedirect(true);
         } catch (error) {
             alert('Login failed');
         }
-        
     }
+
+
+    
 
     return (
         <div className="bg-white py-6 sm:py-8 lg:py-12">
