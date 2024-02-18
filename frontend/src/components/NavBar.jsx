@@ -8,6 +8,8 @@ const NavBar = () => {
         { name: "HOME", url: "/" },
         { name: "ABOUT", url: "/about" },
         { name: "BACKEND TEST", url: "/backendtest" },
+        { name: "STUDENT HOME", url: "/studentHome" }
+        
     ];
 
     let [open, setOpen] = useState(false);
@@ -27,11 +29,12 @@ const NavBar = () => {
                     <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-20 ' : 'top-[-490px]'}`}>
                         {
                             Links.map((link) => (
-                                <li key={link.name} className='md:ml-8 text-xl md:my-0 my-7'>
+                                <ul key={link.name} className='md:ml-8 text-xl md:my-0 my-7'>
                                     <a href={link.url} className='text-gray-800 hover:text-gray-400 duration-500'>{link.name}</a>
-                                </li>
+                                </ul>
                             ))
                         }
+
                         <li className="md:ml-8 text-xl md:my-0 my-7 md:flex items-center">
                             <Link to="/login" className="md:mr-4 md:mb-0 mb-4 block">
                                 <Button>

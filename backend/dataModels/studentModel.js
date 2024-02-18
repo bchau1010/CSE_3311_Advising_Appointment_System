@@ -34,7 +34,6 @@ const studentSchema = mongoose.Schema(
                 type: String,
                 required: false
             }
-
         },
         reminderPreference: {
             phone: {
