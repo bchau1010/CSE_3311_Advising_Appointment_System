@@ -19,12 +19,20 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Link } from 'react-router-dom';
+import StudentTable from './StudentTable';
+import AppointmentPicker from './AppointmentPicker';
+import CalendarDemo from './Calendar';
 
 
+const navItem =[
+    {
+        text: "Student Home",
+        icon: <></>
+    }
+]
 
 //FROM https://mui.com/material-ui/react-drawer/
 const drawerWidth = 240;
-
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
         flexGrow: 1,
@@ -77,17 +85,25 @@ export default function PersistentDrawerLeft(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
+
 
     const handleDrawerClose = () => {
         setOpen(false);
     };
 
+
+
+
+    //Should try and refactor it using props
+    //This should act as a template for both Student and Advisor Layout
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
+
             <AppBar position="fixed" open={open}>
                 <Toolbar>
                     <IconButton
@@ -104,6 +120,8 @@ export default function PersistentDrawerLeft(props) {
                     </Typography>
                 </Toolbar>
             </AppBar>
+
+
             <Drawer
                 sx={{
                     width: drawerWidth,
@@ -124,7 +142,7 @@ export default function PersistentDrawerLeft(props) {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['HOME', 'HOME', 'HOME', 'HOME'].map((text, index) => (
+                    {['Student Home', 'Students Table', 'Calendar', 'Home Navigation'].map((text, index) => (
                         <ListItem key={text} disablePadding>
                             <Link to="/">
                                 <ListItemButton>
@@ -139,35 +157,15 @@ export default function PersistentDrawerLeft(props) {
                     ))}
                 </List>
                 <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
             </Drawer>
+
+            
             <Main open={open}>
                 <DrawerHeader />
-                <Typography paragraph>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                    enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                    imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                    Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                    Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                    adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                    nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                    leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                    feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                    consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                    sapien faucibus et molestie ac.
-                </Typography>
+                <StudentTable/>
+                <AppointmentPicker/>
+                <CalendarDemo/>
+                
                 <Typography paragraph>
                     Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
                     eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
