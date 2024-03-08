@@ -17,6 +17,18 @@ axios.defaults.baseURL = 'http://localhost:4000';
 // make so that credentials will be send with each request
 axios.defaults.withCredentials = true;
 
+
+
+//Lead Avisor and Advisor Login
+  //Extension of an Advisor
+//Advisor Allocate Time Slots 
+  //using callendar to display db 
+  //click on the date to edit/create new appointment
+//Advisor Book Appointments For Student
+  //using list of student to display db
+  //select a single student to make an appointment for
+  //select from available date, time (need a check from db)
+  //select reason for the appointment
 function App() {
   const location = useLocation();
   const hideNavBarRoutes = ['/studentHome', 'advisorHome'];
@@ -31,7 +43,6 @@ function App() {
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<Login />} />
         <Route path='/backendtest' element={<BackendTest />} />
-
         <Route path='/studentHome' element={<StudentDashboard />}>
         </Route>
         <Route path='/advisorHome' element={<AdvisorDashboard />}>

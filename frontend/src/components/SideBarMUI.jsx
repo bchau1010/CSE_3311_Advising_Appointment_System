@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import StudentTable from './StudentTable';
 import AppointmentPicker from './AppointmentPicker';
 import CalendarDemo from './Calendar';
+import Basicform from './basicform';
 
 
 const navItem =[
@@ -162,23 +163,25 @@ export default function PersistentDrawerLeft(props) {
             
             <Main open={open}>
                 <DrawerHeader />
-                <StudentTable/>
-                <AppointmentPicker/>
-                <CalendarDemo/>
+                
                 
                 <Typography paragraph>
-                    Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-                    eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-                    neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-                    tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-                    sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-                    tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-                    gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-                    et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-                    tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-                    eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-                    posuere sollicitudin aliquam ultrices sagittis orci a.
+                    THIS IS ADVISOR HOME DASHBOARD
                 </Typography>
+                <Typography>MAKE AN APPOINTMENT FOR STUDENT</Typography>
+                <StudentTable/>
+                
+                <AppointmentPicker/>
+                
+             
+               
+
+                <CalendarDemo/> 
+                
+                
+               
+                
+                
             </Main>
         </Box>
     );

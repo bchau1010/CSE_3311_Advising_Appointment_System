@@ -20,20 +20,20 @@ class CalendarDemo extends React.Component {
       currentEvents: [
         {
           id: "12315",
-          title: "All-day event",
-          start: "2024-02-18",
+          title: "APPOINTMENT 1",
+          start: "2024-02-04",
         },
         {
           id: "5123",
-          title: "Timed event",
-          start: "2024-02-18T12:00:00",
+          title: "APPOINTMENT 2",
+          start: "2024-02-04T12:00:00",
         },
       ]
     };
   }
 
   handleDateClick = (arg) => {
-    const title = prompt("Please enter a new title for your event");
+    const title = prompt("Please enter a new title for your appointment, please also specify the time");
     if (title) {
       const newEvent = {
         id: new Date().toISOString(),
@@ -46,7 +46,7 @@ class CalendarDemo extends React.Component {
   };
 
   handleEventClick = (arg) => {
-    if (window.confirm(`Are you sure you want to delete the event '${arg.event.title}'`)) {
+    if (window.confirm(`Are you sure you want to make this event recurrent? '${arg.event.title}'`)) {
       const updatedEvents = this.state.currentEvents.filter(event => event.id !== arg.event.id);
       this.setState({ currentEvents: updatedEvents }); // Update currentEvents state
     }

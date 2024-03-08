@@ -7,12 +7,8 @@ export default function StudentDashboard() {
     return (
         <>
             <PersistentDrawerLeft
-            ContextName = "Student Home"/>
+            ContextName = "ADVISOR HOME"/>
 
         </>
     );
 }
-
-
-
-
