@@ -9,10 +9,12 @@ const SignUpForm =() => {
 
     async function registerStudent(event){
         event.preventDefault();
+        let userName = email;
         try {
             await axios.post('/student/register',{
                 name,
                 email,
+                userName,
                 password,
                 major
             });

@@ -34,7 +34,6 @@ const studentSchema = mongoose.Schema(
                 type: String,
                 required: false
             }
-
         },
         reminderPreference: {
             phone: {
@@ -45,7 +44,9 @@ const studentSchema = mongoose.Schema(
                 type: String,
                 required: false
             }
-        }
+        },
+        appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }],
+
     }
 );
 

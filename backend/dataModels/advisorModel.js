@@ -26,7 +26,11 @@ const advisorSchema = mongoose.Schema(
         },
         contactDetail: {
 
-        }
+        },
+        assignedStudents: [
+            { type: mongoose.Schema.Types.ObjectId, ref: 'Student' }
+        ],
+
     },
     {
         timestamps: true,
