@@ -2,9 +2,9 @@ import React from "react";
 import NavBar from "../../components/NavBar.jsx";
 import PersistentDrawerLeft from "../../components/SideBarMUI.jsx";
 
-export default function AdvisorDashboard() {
+export default function LeadAdvisorDashboard() {
     return (
         <PersistentDrawerLeft
-        ContextName ="ADVISOR HOME"/>
+        ContextName ="LEAD ADVISOR HOME"/>
     );
 }

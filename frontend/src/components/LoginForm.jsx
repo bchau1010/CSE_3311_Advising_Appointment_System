@@ -1,59 +1,133 @@
-import { useState } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import AuthContext from '../context/AuthProvider';
+import useAuth from '../customHooks/useAuth';
 
-
-const LoginForm = () => {
+const LoginForm = (props) => {
+    // allow us to use the context we created in AuthProvider.jsx
+    //const { setAuth } = useContext(AuthContext);
+    const {auth, setAuth} = useAuth();
+    const navigate = useNavigate();
+    // use to update the screen when user input data
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
 
+    
     async function handleLogin(event) {
         event.preventDefault();
         try {
-            await axios.post('/student/login', { email, password });
-            alert('Login success!');
+            const response = await axios.post(props.LOGIN_URL,
+                JSON.stringify({ email, password }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+
+            // Log the response on screen
+            console.log(JSON.stringify(response?.data));
+
+            // Fetch the accessToken and role from the body of the response from the server
+            const accessToken = response?.data?.accessToken;
+            const role = response?.data?.role;
+
+            // IMPORTANT: Tell the authProvider that we have an access token with an assigned role
+            setAuth({ email, password, role, accessToken });
+            setEmail('');
+            setPassword('');
             setRedirect(true);
-            if(redirect){
-                useNavigate('/studentHome');
+            //navigate(from, { replace: true });
+
+            //console.log(`${navigate}`);
+        } catch (err) {
+            if (!err?.response) {
+                alert('No Server Response');
+            } else if (err.response.status === 400) {
+                alert('Wrong Email or Password');
+            } else if (err.response.status === 401) {
+                alert('Unauthorized');
+            } else {
+                alert('Login Failed');
             }
-        } catch (error) {
-            alert('Login failed');
         }
     }
+    
+    useEffect(() => {
+        // Redirect after successful login
+        
+        console.log(`${redirect}`)
+        console.log(`${auth.role}`)
+        console.log(`${props.redirectURL}`)
+        
+        if (redirect) {
+            console.log('redirecting')
+            navigate(props.redirectURL); // Use the prop for redirect URL
+        }
+    }, [auth, redirect, navigate, props.redirectURL]);
 
+    /*if (isAdvisor) {
+            try {
+                await axios.post(props.URL, { email, password });
+                alert(`Advisor ${email} login success!`);
+                setRedirect(true);
+                if(redirect){
+                    //'/advisorHome'
+                    useNavigate(props.redirectURL);
+                }
+            } catch (error) {
+                alert('Login failed');
+            }
+        } else {
+            try {
+                //'/advisor/login'
+                await axios.post(props.URL, { email, password });
+                alert(`Student ${email} Login success!`);
+                setRedirect(true);
+                if(redirect){
+                    //'/advisorHome'
+                    useNavigate(props.redirectURL);
+                }
+            } catch (error) {
+                alert('Login failed');
+            }
+        } */
 
     return (
-        <div className="bg-white py-6 sm:py-8 lg:py-12">
-            <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+        <>
+            <div className="bg-white py-6 sm:py-8 lg:py-12">
+                <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
 
-                <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl">Login</h2>
+                    <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl">{props.loginHeader}</h2>
 
-                <form className="mx-auto max-w-lg rounded-lg border" onSubmit={handleLogin}>
-                    <div className="flex flex-col gap-4 p-4 md:p-8">
-                        <div>
-                            <label htmlFor="email" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Email</label>
-                            <input name="email" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
-                                value={email}
-                                onChange={event => setEmail(event.target.value)} />
+                    <form className="mx-auto max-w-lg rounded-lg border" onSubmit={handleLogin}>
+                        <div className="flex flex-col gap-4 p-4 md:p-8">
+                            <div>
+                                <label htmlFor="email" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Email</label>
+                                <input name="email" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+                                    value={email}
+                                    onChange={event => setEmail(event.target.value)} />
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Password</label>
+                                <input name="password" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+                                    value={password}
+                                    onChange={event => setPassword(event.target.value)} />
+                            </div>
+
+                            <button className="block rounded-lg bg-gray-800 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-gray-300 transition duration-100 hover:bg-gray-700 focus-visible:ring active:bg-gray-600 md:text-base">
+                                Log in
+                            </button>
                         </div>
-                        <div>
-                            <label htmlFor="password" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Password</label>
-                            <input name="password" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
-                                value={password}
-                                onChange={event => setPassword(event.target.value)} />
+                        <div className="flex items-center justify-center bg-gray-100 p-4">
+                            <p className="text-center text-sm text-gray-500">Don't have an account? <a href="/signup" className="text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">Sign Up</a></p>
                         </div>
-
-                        <button className="block rounded-lg bg-gray-800 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-gray-300 transition duration-100 hover:bg-gray-700 focus-visible:ring active:bg-gray-600 md:text-base">
-                            Log in
-                        </button>
-                    </div>
-                    <div className="flex items-center justify-center bg-gray-100 p-4">
-                        <p className="text-center text-sm text-gray-500">Don't have an account? <a href="/signup" className="text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">Sign Up</a></p>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
+
     )
 }
 

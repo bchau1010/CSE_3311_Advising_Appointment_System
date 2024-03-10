@@ -33,6 +33,8 @@ const navItem =[
 ]
 
 //FROM https://mui.com/material-ui/react-drawer/
+
+//Apply the style to the entire look of the page
 const drawerWidth = 240;
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -54,6 +56,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 
+//Apply style to the the sidebar
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
@@ -71,6 +74,7 @@ const AppBar = styled(MuiAppBar, {
     }),
 }));
 
+//Apply style to the Header
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -81,30 +85,25 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-
+{/*THE CONTAINER THAT TAKE PROPS*/}
 export default function PersistentDrawerLeft(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-
-
     const handleDrawerOpen = () => {
         setOpen(true);
     };
-
-
     const handleDrawerClose = () => {
         setOpen(false);
     };
 
 
-
-
-    //Should try and refactor it using props
     //This should act as a template for both Student and Advisor Layout
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
 
+
+            {/*HEADER (Finsihed)*/}
             <AppBar position="fixed" open={open}>
                 <Toolbar>
                     <IconButton
@@ -122,7 +121,7 @@ export default function PersistentDrawerLeft(props) {
                 </Toolbar>
             </AppBar>
 
-
+            {/*POP OPEN SIDE BAR (Need to be Refactor) */}
             <Drawer
                 sx={{
                     width: drawerWidth,
@@ -160,28 +159,18 @@ export default function PersistentDrawerLeft(props) {
                 <Divider />
             </Drawer>
 
-            
+            {/*ACTUAL CONTENT (Need to be Refactor)*/}
             <Main open={open}>
                 <DrawerHeader />
-                
-                
                 <Typography paragraph>
-                    THIS IS ADVISOR HOME DASHBOARD
+                    {props.dashBoardName}
                 </Typography>
-                <Typography>MAKE AN APPOINTMENT FOR STUDENT</Typography>
+                <Typography>
+                    {props.listOfStudentHeader}
+                </Typography>
                 <StudentTable/>
-                
                 <AppointmentPicker/>
-                
-             
-               
-
                 <CalendarDemo/> 
-                
-                
-               
-                
-                
             </Main>
         </Box>
     );

@@ -3,7 +3,9 @@ import { StudentModel } from '../dataModels/studentModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+
 const studentRouter = express.Router();
+
 
 /*
 studentRouter.post('/',async(request,response)=>{
@@ -53,6 +55,7 @@ studentRouter.post('/register', async (req, res) => {
             major
         });
         res.json(newStudent);
+        console.log(`New student added: ${name} `);
     } catch (error) {
         console.log(error);
         res.status(422).json(error);
@@ -61,28 +64,67 @@ studentRouter.post('/register', async (req, res) => {
 
 //jwt secret to securely transmit message
 const jwtSecret = "a134asd8b8d9d0a89f8b7e72dv2";
+const refreshSecret = "a134aadf9asb81129sdfass2";
 
 studentRouter.post('/login', async (req, res) => {
-    const {email, password} = req.body;
-    // check if the email is in the DB
-    const checkStudent = await StudentModel.findOne({email});
+    const { email, password } = req.body;
+    if (!email || !password) {
+        console.log('Email and password are required');
+        return res.status(400).json({ 'message': 'Email and password are required.' });
+    }
+    
 
-    if (checkStudent){
+    // check if the email is in the DB
+    const checkStudent = await StudentModel.findOne({ email });
+    // if not, send back status
+    if (!checkStudent){
+        console.log('Email is not in DB');
+        return res.status(401).json('Email is not in DB');
+    }
+
+    if (checkStudent) {
         //check if the password matched
         const passOk = bcrypt.compareSync(password, checkStudent.password);
-        
-        if(passOk){
+
+        if (passOk) {
             // make jwt sign the email and id, to make sure it matched the DB instances
-            jwt.sign({email: checkStudent.email, id: checkStudent._id}, jwtSecret, {},(error,token)=>{
-                if(error) throw error;
+            /*jwt.sign({ email: checkStudent.email, id: checkStudent._id }, jwtSecret, {}, (error, token) => {
+                if (error) throw error;
                 res.cookie('token', token).json('Password Matched!');
-            });
-            
-        }else{
-            res.status(422).json('Password Incorrect');
+            }); 
+            */
+            // AccessToken
+            const role = checkStudent.role;
+            const accessToken = jwt.sign(
+                {
+                    "UserInfo": {
+                        "email": checkStudent.email,
+                        "role": role
+                    }
+                },
+                jwtSecret,
+                { expiresIn: '30min' }
+            );
+
+            // RefreshToken 
+            const refreshToken = jwt.sign(
+                { "username": checkStudent.email },
+                refreshSecret,
+                { expiresIn: '1d' }
+            );
+
+
+            checkStudent.refreshToken = refreshToken;
+            const result = await checkStudent.save();
+            // Creates Secure Cookie with refresh token
+            res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+
+            // Send authorization roles and access token to user
+            res.json({ role, accessToken });
+
+        } else {
+            res.status(400).json('Password Incorrect');
         }
-    }else{
-        res.json('student not found');
     }
 });
 

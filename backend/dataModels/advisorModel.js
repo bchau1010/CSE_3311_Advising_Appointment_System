@@ -25,12 +25,17 @@ const advisorSchema = mongoose.Schema(
             required: true,
         },
         contactDetail: {
-
+            type: String
         },
         assignedStudents: [
             { type: mongoose.Schema.Types.ObjectId, ref: 'Student' }
         ],
-
+        role: {
+            type: Number,
+            required: true,
+            default: 2
+        },
+        refreshToken: String
     },
     {
         timestamps: true,

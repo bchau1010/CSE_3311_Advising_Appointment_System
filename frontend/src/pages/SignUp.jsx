@@ -4,8 +4,17 @@ import SignUpForm from "../components/SignUpForm.jsx";
 export default function SignUp (){
     return(
         <>
+        <NavBar/>
+        <SignUpForm
+        URL = "/student/register"
+        header = "Student Sign up"
+        isAdvisor = {false}/>
         
-        <SignUpForm/>
+
+        <SignUpForm
+        URL = "/advisor/register"
+        header = "Advisor Sign up"
+        isAdvisor = {true}/>
         </>
     );
 }

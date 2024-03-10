@@ -2,6 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 
+
+
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -54,10 +56,13 @@ const rows = [
 
 
 //From https://mui.com/material-ui/react-table/
+
+//NEED TO REFACTOR TO ALLOW FOR BACKEND FETCHING DEPEND ON THE CONTEXT
 export default function StudentTable() {
   return (
     <Box sx={{ height: 320, width: '100%' }}>
       <DataGrid
+        
         rows={rows}
         columns={columns}
         initialState={{

@@ -7,7 +7,10 @@ export default function StudentDashboard() {
     return (
         <>
             <PersistentDrawerLeft
-            ContextName = "ADVISOR HOME"/>
+            ContextName = "STUDENT HOME"
+            dashBoardName = "This is student Dashboard"
+            listOfStudentHeader = "This is a list of student"
+            />
 
         </>
     );

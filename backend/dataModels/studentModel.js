@@ -29,7 +29,7 @@ const studentSchema = mongoose.Schema(
             required: true,
         },
         contactDetail: {
-            address:{},
+            address:{type: String},
             email: {
                 type: String,
                 required: false
@@ -46,7 +46,12 @@ const studentSchema = mongoose.Schema(
             }
         },
         appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }],
-
+        role:{
+            type: Number,
+            required: true,
+            default: 1
+        },
+        refreshToken: String
     }
 );
 
