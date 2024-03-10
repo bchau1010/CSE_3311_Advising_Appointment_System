@@ -133,8 +133,7 @@ export default function PersistentDrawerLeft(props) {
                 }}
                 variant="persistent"
                 anchor="left"
-                open={open}
-            >
+                open={open}>
                 <DrawerHeader>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}

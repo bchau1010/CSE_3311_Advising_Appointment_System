@@ -2,11 +2,11 @@ import { useState } from 'react'
 import './App.css'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import axios from "axios";
-import Home from './pages/Home';
-import About from './pages/About';
-import SignUp from './pages/SignUp';
-import Login from './pages/Login';
-import BackendTest from './pages/BackendTest';
+import Home from './pages/public/Home';
+import About from './pages/public/About';
+import SignUp from './pages/public/SignUp';
+import Login from './pages/public/Login';
+import BackendTest from './pages/public/BackendTest';
 import StudentDashboard from './pages/Student/StudentDashboard';
 import AdvisorDashboard from './pages/Advisor/AdvisorDashboard';
 import NavBar from './components/NavBar';
