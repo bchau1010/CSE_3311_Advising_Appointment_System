@@ -29,23 +29,31 @@ const studentSchema = mongoose.Schema(
             required: true,
         },
         contactDetail: {
-            address:{type: String},
+            address:{type: String, default: null},
             email: {
                 type: String,
-                required: false
+                required: false,
+                default: null
             }
         },
         reminderPreference: {
+            reminder: {type: Boolean},
+            text: {type: Number, default: null},
             phone: {
                 type: Number,
-                required: false
+                required: false, 
+                default: null
             },
             email: {
                 type: String,
-                required: false
+                required: false,
+                default: null
             }
         },
         appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }],
+        assignedAdvisor: [
+            { type: mongoose.Schema.Types.ObjectId, ref: 'Advisor', unique: true,default: null }
+        ],
         role:{
             type: Number,
             required: true,

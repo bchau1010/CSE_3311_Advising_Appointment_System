@@ -20,17 +20,11 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Link } from 'react-router-dom';
 import StudentTable from './StudentTable';
-import AppointmentPicker from './AppointmentPicker';
 import CalendarDemo from './Calendar';
-import Basicform from './basicform';
+import { useState } from 'react';
 
 
-const navItem =[
-    {
-        text: "Student Home",
-        icon: <></>
-    }
-]
+
 
 //FROM https://mui.com/material-ui/react-drawer/
 
@@ -85,10 +79,12 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-{/*THE CONTAINER THAT TAKE PROPS*/}
-export default function PersistentDrawerLeft(props) {
+{/*THE CONTAINER THAT TAKE PROPS*/ }
+export default function PersistentDrawerLeft(props, navItems, children) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [selectedNavItem, setSelectedNavItem] = useState(null);
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -96,6 +92,10 @@ export default function PersistentDrawerLeft(props) {
         setOpen(false);
     };
 
+    const handleNavItemSelect = (index) => {
+        setSelectedNavItem(index);
+        handleDrawerClose();
+    };
 
     //This should act as a template for both Student and Advisor Layout
     return (
@@ -116,6 +116,7 @@ export default function PersistentDrawerLeft(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
+                        {/*{role === 'student' ? 'Student Dashboard' : 'Advisor Dashboard'} */}
                         {props.ContextName}
                     </Typography>
                 </Toolbar>
@@ -140,8 +141,10 @@ export default function PersistentDrawerLeft(props) {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
+
+                {/*ACUTAL NAVIGATION: make it so that it take prop and set the navigation based on the props array */}
                 <List>
-                    {['Student Home', 'Students Table', 'Calendar', 'Home Navigation'].map((text, index) => (
+                    {['Home', 'Table', 'Calendar', 'Home Navigation'].map((text, index) => (
                         <ListItem key={text} disablePadding>
                             <Link to="/">
                                 <ListItemButton>
@@ -151,25 +154,39 @@ export default function PersistentDrawerLeft(props) {
                                     <ListItemText primary={text} />
                                 </ListItemButton>
                             </Link>
-
                         </ListItem>
                     ))}
                 </List>
+
+
+                {/*CHATGPT VERSION
+                    <List>
+                    {navItems.map((item, index) => (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton onClick={() => handleNavItemSelect(index)}>
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+                */}
+                
+                
                 <Divider />
             </Drawer>
 
-            {/*ACTUAL CONTENT (Need to be Refactor)*/}
+            {/*ACTUAL CONTENT: take prop for now, next make it so that it work with navItems and route*/}
             <Main open={open}>
                 <DrawerHeader />
+                
                 <Typography paragraph>
                     {props.dashBoardName}
                 </Typography>
-                <Typography>
-                    {props.listOfStudentHeader}
-                </Typography>
-                <StudentTable/>
-                <AppointmentPicker/>
-                <CalendarDemo/> 
+
+                {props.children}
+                {/*selectedNavItem !== null && children[selectedNavItem]*/}
+
             </Main>
         </Box>
     );

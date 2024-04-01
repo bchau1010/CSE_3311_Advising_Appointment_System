@@ -1,8 +1,9 @@
 import express from 'express';
-import {AdvisorModel} from '../dataModels/advisorModel.js';
+import { AdvisorModel } from '../dataModels/advisorModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
+import { StudentModel } from '../dataModels/studentModel.js';
+import { AppointmentModel } from '../dataModels/appointmentModel.js';
 const advisorRouter = express.Router();
 
 
@@ -30,6 +31,8 @@ advisorRouter.post('/register', async (req, res) => {
 });
 
 
+
+
 //jwt secret to securely transmit message
 const jwtSecret = "a134asd8b8d9d0a89f8b7e72dv2";
 const refreshSecret = "a134aadf9asb81129sdfass2";
@@ -39,12 +42,12 @@ advisorRouter.post('/login', async (req, res) => {
         console.log('Email and password are required');
         return res.status(400).json({ 'message': 'Email and password are required.' });
     }
-    
+
 
     // check if the email is in the DB
     const checkAdvisor = await AdvisorModel.findOne({ email });
     // if not, send back status
-    if (!checkAdvisor){
+    if (!checkAdvisor) {
         console.log('Email is not in DB');
         return res.status(401).json('Email is not in DB');
     }
@@ -86,6 +89,149 @@ advisorRouter.post('/login', async (req, res) => {
         } else {
             res.status(400).json('Password Incorrect');
         }
+    }
+});
+
+
+// get all student in the db
+advisorRouter.get('/fetchAllStudent', async (req, res) => {
+    try {
+        // Populate the field assigned advisor
+        const students = await StudentModel.aggregate([
+            {
+                $lookup: {
+                    from: "advisors", // Collection name of advisors
+                    localField: "assignedAdvisor",
+                    foreignField: "_id",
+                    as: "assignedAdvisor"
+                }
+            },
+            {
+                $addFields: {
+                    assignedAdvisor: { $arrayElemAt: ["$assignedAdvisor.name", 0] },
+                    assignedAdvisorId: { $arrayElemAt: ["$assignedAdvisor._id", 0] }
+                }
+            }
+        ]);
+        
+
+        return res.status(200).json({
+            individualStudent: students
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+});
+
+
+// make an appointment for students and advisor
+advisorRouter.post('/makeAppointment', async (req, res) => {
+    const { studentId, advisorId, dateTime, task, description, recurrence } = req.body;
+
+    try {
+        
+        const student = await StudentModel.findById(studentId);
+        const advisor = await AdvisorModel.findById(advisorId);
+
+        // Check if both student and advisor exist
+        if (!student || !advisor) {
+            return res.status(404).json({ message: 'Student or advisor not found.' });
+        }
+
+        // Check if the advisor is the corresponding advisor to the student
+        if (!student.assignedAdvisor[0].equals(advisor._id)) {
+            return res.status(403).json({ message: 'Advisor is not assigned to the student.' });
+        }
+
+        // Check if there's an existing appointment with the same date and time
+        const existingAppointment = await AppointmentModel.findOne({ dateTime });
+        if (existingAppointment) {
+            return res.status(409).json({ message: 'An appointment already exists at the specified date and time.' });
+        }
+
+        // Check if the dateTime is in the future
+        if (new Date(dateTime) <= new Date()) {
+            return res.status(400).json({ message: 'Appointment date must be in the future.' });
+        }
+        
+        
+        // Create a new appointment
+        const newAppointmentData = {
+            student: studentId,
+            advisor: advisorId,
+            dateTime,
+            task,
+            description,
+        };
+
+        // Add recurrence data if provided
+        if (recurrence) {
+            newAppointmentData.recurrence = recurrence;
+        }
+
+        const newAppointment = await AppointmentModel.create(newAppointmentData);
+
+        // Add the new appointment to the student's appointments
+        student.appointments.push(newAppointment._id);
+
+        // Add the new appointment to the advisor's appointments
+        advisor.appointments.push(newAppointment._id);
+
+        // Save changes to both student and advisor documents
+        await student.save();
+        await advisor.save();
+
+        res.status(201).json(newAppointment);
+        console.log('New appointment created:', newAppointment);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Failed to create appointment.', error });
+    }
+});
+
+
+
+
+//assign student to advisor and vice versa
+async function assignAdvisorToStudent(advisorId, studentId) {
+    try {
+        const student = await StudentModel.findById(studentId);
+        const advisor = await AdvisorModel.findById(advisorId);
+
+        // Check if both student and advisor exist
+        if (!student || !advisor) {
+            throw new Error('Student or advisor not found.');
+        }
+ 
+
+        // Check if the advisor already has the student in their list of assigned students
+        if (advisor.assignedStudents.includes(studentId)) {
+            throw new Error('Advisor already assigned to the student.');
+        }
+
+        // Assign the advisor to the student and the student to the advisor
+        student.assignedAdvisor = advisorId;
+        advisor.assignedStudents.push(studentId);
+
+        await Promise.all([student.save(), advisor.save()]);
+        return { success: true, message: 'Advisor successfully assigned to student.' };
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+// Endpoint to assign a student to an advisor or an advisor to a student
+advisorRouter.post('/assign', async (req, res) => {
+    try {
+        const { advisorId, studentId } = req.body;
+        const result = await assignAdvisorToStudent(advisorId, studentId);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
     }
 });
 

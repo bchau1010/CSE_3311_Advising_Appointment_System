@@ -11,10 +11,11 @@ import StudentDashboard from './pages/Student/StudentDashboard';
 import AdvisorDashboard from './pages/Advisor/AdvisorDashboard';
 import NavBar from './components/NavBar';
 import LeadAdvisorDashboard from './pages/Advisor/LeadAdvisorDashboard';
-
+import AllocateTimeSlot from './pages/Advisor/Activities/AllocateTimeSlot';
 import RequireAuth from './context/RequireAuth';
 import Unauthorized from './pages/AuthRedirect/Unauthorized';
 import PageNotFound from './pages/AuthRedirect/PageNotFound';
+import MakeAppointment from './pages/Advisor/Activities/MakeAppointment';
 
 //Initialized the default webpage url, 
 //so that when we request, we just need the endpoint
@@ -54,15 +55,29 @@ function App() {
           then we can do nested routes inside
         */}
         {/*Make it so that the authorization for each is required  */}
+        
+        
         <Route element={<RequireAuth allowedRoles={[1]} />}>
           <Route path='/studentHome' element={<StudentDashboard />} />
         </Route>
-        <Route element={<RequireAuth allowedRoles={[2]} />}>
-          <Route path='/advisorHome' element={<AdvisorDashboard />} />
+
+
+        <Route path='/advisorHome' element={<AdvisorDashboard />}>
+          {/* <Route path='/makeAppointment' element={<MakeAppointment />} />*/}
         </Route>
+
+        <Route path='/advisorTimeSlot' element={<AllocateTimeSlot/>}>
+          {/* <Route path='/makeAppointment' element={<MakeAppointment />} />*/}
+        </Route>
+        
+        <Route element={<RequireAuth allowedRoles={[2]} />}>
+          
+        </Route>
+
         <Route element={<RequireAuth allowedRoles={[3]} />}>
           <Route path='/leadAdvisorHome' element={<LeadAdvisorDashboard />} />
         </Route>
+        
         <Route path="*" element={<PageNotFound />} />
       </Routes>
 

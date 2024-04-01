@@ -14,6 +14,7 @@ import {
 
 class CalendarDemo extends React.Component {
 
+
   constructor(props) {
     super(props);
     this.state = {
@@ -32,6 +33,7 @@ class CalendarDemo extends React.Component {
     };
   }
 
+
   handleDateClick = (arg) => {
     const title = prompt("Please enter a new title for your appointment, please also specify the time");
     if (title) {
@@ -45,6 +47,7 @@ class CalendarDemo extends React.Component {
     }
   };
 
+
   handleEventClick = (arg) => {
     if (window.confirm(`Are you sure you want to make this event recurrent? '${arg.event.title}'`)) {
       const updatedEvents = this.state.currentEvents.filter(event => event.id !== arg.event.id);
@@ -52,12 +55,11 @@ class CalendarDemo extends React.Component {
     }
   };
 
+
   render() {
     const { currentEvents } = this.state;
-
     return (
       <>
-        
         <Typography variant="h5">Events</Typography>
         <List>
           {currentEvents.map((event) => (
@@ -83,7 +85,6 @@ class CalendarDemo extends React.Component {
             </ListItem>
           ))}
         </List>
-
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
           headerToolbar={{

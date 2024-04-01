@@ -8,7 +8,8 @@ const NavBar = (props) => {
         { name: "HOME", url: "/" },
         { name: "ABOUT", url: "/about" },
         { name: "BACKEND TEST", url: "/backendtest" },
-        { name: "STUDENT HOME", url: "/studentHome" }
+        { name: "ADVISOR HOME", url: "/advisorHome" },
+        { name: "ADVISOR ALLOCATE TIME SLOT", url: "/advisorTimeSlot" }
 
     ];
 
