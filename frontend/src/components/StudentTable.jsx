@@ -70,7 +70,7 @@ export default function StudentTable({onSelect}) {
   }, []);
 
 
-  //fetch student id and advisor id for the other components
+  //fetch student id and advisor id for the other outside components
   const handleRowSelection = (selection) => {
     const selectedStudents = selection.map(selectedStudentId => {
         // Find the student object in the data array based on the selected student ID

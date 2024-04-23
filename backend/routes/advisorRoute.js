@@ -31,8 +31,6 @@ advisorRouter.post('/register', async (req, res) => {
 });
 
 
-
-
 //jwt secret to securely transmit message
 const jwtSecret = "a134asd8b8d9d0a89f8b7e72dv2";
 const refreshSecret = "a134aadf9asb81129sdfass2";
@@ -114,7 +112,6 @@ advisorRouter.get('/fetchAllStudent', async (req, res) => {
             }
         ]);
         
-
         return res.status(200).json({
             individualStudent: students
         });
@@ -137,22 +134,26 @@ advisorRouter.post('/makeAppointment', async (req, res) => {
 
         // Check if both student and advisor exist
         if (!student || !advisor) {
+            console.log(res.status(404));
             return res.status(404).json({ message: 'Student or advisor not found.' });
         }
 
         // Check if the advisor is the corresponding advisor to the student
         if (!student.assignedAdvisor[0].equals(advisor._id)) {
+            console.log(res.status(403));
             return res.status(403).json({ message: 'Advisor is not assigned to the student.' });
         }
 
         // Check if there's an existing appointment with the same date and time
         const existingAppointment = await AppointmentModel.findOne({ dateTime });
         if (existingAppointment) {
+            console.log(res.status(409));
             return res.status(409).json({ message: 'An appointment already exists at the specified date and time.' });
         }
 
         // Check if the dateTime is in the future
         if (new Date(dateTime) <= new Date()) {
+            console.log(res.status(400));
             return res.status(400).json({ message: 'Appointment date must be in the future.' });
         }
         
@@ -165,6 +166,7 @@ advisorRouter.post('/makeAppointment', async (req, res) => {
             task,
             description,
         };
+
 
         // Add recurrence data if provided
         if (recurrence) {
@@ -192,8 +194,6 @@ advisorRouter.post('/makeAppointment', async (req, res) => {
 });
 
 
-
-
 //assign student to advisor and vice versa
 async function assignAdvisorToStudent(advisorId, studentId) {
     try {
@@ -205,7 +205,6 @@ async function assignAdvisorToStudent(advisorId, studentId) {
             throw new Error('Student or advisor not found.');
         }
  
-
         // Check if the advisor already has the student in their list of assigned students
         if (advisor.assignedStudents.includes(studentId)) {
             throw new Error('Advisor already assigned to the student.');
@@ -232,6 +231,85 @@ advisorRouter.post('/assign', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+
+// Fetch all appointment tied to the advisor ID
+    // get appointment id from advisor
+    // get those appointment id from appointmentModel
+    // return all data of each appointment as an array of appointment
+// Not done
+advisorRouter.post('/getAllAppointment', async (req, res) => {
+    try {
+      // Get advisor id from the request body
+      const { advisorId } = req.body;
+  
+      // Find the advisor in the database
+      const advisor = await AdvisorModel.findById(advisorId);
+      if (!advisor) {
+        console.log('Advisor not found');
+        throw new Error('Advisor not found.');
+      }
+  
+      // Fetch the appointments for the advisor including studentName and advisorName
+      const appointments = await AppointmentModel.find({ advisor: advisorId })
+        .populate({
+          path: 'student',
+          select: 'name',
+          model: 'Student'
+        }) // Populate studentName field
+        .populate({
+          path: 'advisor',
+          select: 'name',
+          model: 'Advisor'
+        }); // Populate advisorName field
+  
+      // Map appointments and create a new array with required fields
+      const mappedAppointments = appointments.map(appointment => ({
+        id: appointment._id,
+        student: appointment.student._id,
+        studentName: appointment.student.name, 
+        advisor: appointment.advisor._id,
+        advisorName: appointment.advisor.name, 
+        start: appointment.dateTime,
+        title: appointment.task,
+        description: appointment.description,
+        recurrence: appointment.recurrence
+      }));
+  
+      return res.status(200).json(mappedAppointments);
+  
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+advisorRouter.post('/editAppointmentRecurrence', async (req, res) => {
+    try {
+        // Get advisor ID, appointment ID, and recurrence data from request body
+        const { appointmentId, frequency, interval } = req.body;
+
+        // Find the appointment by ID
+        const appointment = await AppointmentModel.findById(appointmentId);
+        if (!appointment) {
+            return res.status(404).json({ message: 'Appointment not found.' });
+        }
+
+        // Update the recurrence
+        appointment.recurrence.frequency = frequency;
+        appointment.recurrence.interval = interval;
+
+        await appointment.save();
+
+        return res.status(200).json({
+            message: 'Recurrence updated successfully',
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Failed to Update Appointment 500' });
     }
 });
 

@@ -56,9 +56,9 @@ function App() {
         */}
         {/*Make it so that the authorization for each is required  */}
         
-        
         <Route element={<RequireAuth allowedRoles={[1]} />}>
           <Route path='/studentHome' element={<StudentDashboard />} />
+
         </Route>
 
 

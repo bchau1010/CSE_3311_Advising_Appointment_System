@@ -12,9 +12,9 @@ const appointmentSchema = mongoose.Schema(
         task: {type: String, required: true},
         description: { type: String,required:true},
         recurrence: {
-            frequency: { type: String, enum: ['days', 'weeks', 'months','years'], default: null},
+            frequency: { type: String, enum: ['days', 'weeks', 'months','years','N/A'], default: 'N/A'},
             // Indicate how often, ie every 2 weeks, every 3 months, etc
-            interval: { type: Number, default: 1 },
+            interval: { type: Number, default: 0 },
             // Optional field for specifying end date for recurring appointments
             endDate: { type: Date } 
         }

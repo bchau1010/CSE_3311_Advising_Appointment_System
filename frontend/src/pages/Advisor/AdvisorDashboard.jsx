@@ -12,7 +12,7 @@ export default function AllocateTime() {
     const [selectedData, setSelectedData] = useState([]);
 
     const handleSelect = (data) => {
-        setSelectedData(data);        
+        setSelectedData(data);
     };
 
     console.log('AdvisordashBoard:', selectedData);

@@ -54,13 +54,13 @@ const AppointmentForm = (props) => {
     
         } catch (err) {
             if (!err?.response) {
-                alert('No Server Response');
-            } else if (err.response.status !== 400) {
+                alert('Something went wrong! Please check that all field are filled in!');
+            } else if (err.response.status === 409) {
                 alert(err.response.data.message);
             } else if (err.response.status === 400){
                 alert('Appointment date must be in the future.');
             }else{
-                alert('Make Appointment Failed');
+                alert('Make Appointment Failed!');
             }
         }
     };

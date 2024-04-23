@@ -144,7 +144,7 @@ export default function PersistentDrawerLeft(props, navItems, children) {
 
                 {/*ACUTAL NAVIGATION: make it so that it take prop and set the navigation based on the props array */}
                 <List>
-                    {['Home', 'Table', 'Calendar', 'Home Navigation'].map((text, index) => (
+                    {['Home', 'Make An Appointment', 'Profile', 'View current Appointments'].map((text, index) => (
                         <ListItem key={text} disablePadding>
                             <Link to="/">
                                 <ListItemButton>
