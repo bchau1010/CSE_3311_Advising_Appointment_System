@@ -20,19 +20,15 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Link } from 'react-router-dom';
 import StudentTable from './StudentTable';
-import AppointmentPicker from './AppointmentPicker';
 import CalendarDemo from './Calendar';
-import Basicform from './basicform';
+import { useState } from 'react';
 
 
-const navItem =[
-    {
-        text: "Student Home",
-        icon: <></>
-    }
-]
+
 
 //FROM https://mui.com/material-ui/react-drawer/
+
+//Apply the style to the entire look of the page
 const drawerWidth = 240;
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -54,6 +50,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 
+//Apply style to the the sidebar
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
@@ -71,6 +68,7 @@ const AppBar = styled(MuiAppBar, {
     }),
 }));
 
+//Apply style to the Header
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -81,30 +79,31 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-
-export default function PersistentDrawerLeft(props) {
+{/*THE CONTAINER THAT TAKE PROPS*/ }
+export default function PersistentDrawerLeft(props, navItems, children) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-
+    const [selectedNavItem, setSelectedNavItem] = useState(null);
 
     const handleDrawerOpen = () => {
         setOpen(true);
     };
-
-
     const handleDrawerClose = () => {
         setOpen(false);
     };
 
+    const handleNavItemSelect = (index) => {
+        setSelectedNavItem(index);
+        handleDrawerClose();
+    };
 
-
-
-    //Should try and refactor it using props
     //This should act as a template for both Student and Advisor Layout
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
 
+
+            {/*HEADER (Finsihed)*/}
             <AppBar position="fixed" open={open}>
                 <Toolbar>
                     <IconButton
@@ -117,12 +116,13 @@ export default function PersistentDrawerLeft(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
+                        {/*{role === 'student' ? 'Student Dashboard' : 'Advisor Dashboard'} */}
                         {props.ContextName}
                     </Typography>
                 </Toolbar>
             </AppBar>
 
-
+            {/*POP OPEN SIDE BAR (Need to be Refactor) */}
             <Drawer
                 sx={{
                     width: drawerWidth,
@@ -134,16 +134,17 @@ export default function PersistentDrawerLeft(props) {
                 }}
                 variant="persistent"
                 anchor="left"
-                open={open}
-            >
+                open={open}>
                 <DrawerHeader>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
+
+                {/*ACUTAL NAVIGATION: make it so that it take prop and set the navigation based on the props array */}
                 <List>
-                    {['Student Home', 'Students Table', 'Calendar', 'Home Navigation'].map((text, index) => (
+                    {['Home', 'Make An Appointment', 'Profile', 'View current Appointments'].map((text, index) => (
                         <ListItem key={text} disablePadding>
                             <Link to="/">
                                 <ListItemButton>
@@ -153,35 +154,39 @@ export default function PersistentDrawerLeft(props) {
                                     <ListItemText primary={text} />
                                 </ListItemButton>
                             </Link>
-
                         </ListItem>
                     ))}
                 </List>
+
+
+                {/*CHATGPT VERSION
+                    <List>
+                    {navItems.map((item, index) => (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton onClick={() => handleNavItemSelect(index)}>
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+                */}
+                
+                
                 <Divider />
             </Drawer>
 
-            
+            {/*ACTUAL CONTENT: take prop for now, next make it so that it work with navItems and route*/}
             <Main open={open}>
                 <DrawerHeader />
                 
-                
                 <Typography paragraph>
-                    THIS IS ADVISOR HOME DASHBOARD
+                    {props.dashBoardName}
                 </Typography>
-                <Typography>MAKE AN APPOINTMENT FOR STUDENT</Typography>
-                <StudentTable/>
-                
-                <AppointmentPicker/>
-                
-             
-               
 
-                <CalendarDemo/> 
-                
-                
-               
-                
-                
+                {props.children}
+                {/*selectedNavItem !== null && children[selectedNavItem]*/}
+
             </Main>
         </Box>
     );

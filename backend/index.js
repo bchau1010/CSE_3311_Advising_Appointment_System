@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import studentRouter from "./routes/studentRoute.js";
 import advisorRouter from "./routes/advisorRoute.js";
+// run using `nodemon index.js`
 
 
 const app = express();

@@ -1,65 +1,88 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
-const SignUpForm =() => {
-    const [name,setName] = useState('');
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
-    const [major,setMajor] = useState('');
+const SignUpForm = (props) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [major, setMajor] = useState('');
+    const isAdvisor = props.isAdvisor;
+    const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-    async function registerStudent(event){
+
+    async function registerStudent(event) {
         event.preventDefault();
         let userName = email;
-        try {
-            await axios.post('/student/register',{
-                name,
-                email,
-                userName,
-                password,
-                major
-            });
-            alert('Registration success!');
-        } catch (error) {
-            alert('Registration failed. Please try again later!');
+        if (isAdvisor) {
+            try {
+                await axios.post(props.URL, {
+                    name,
+                    email,
+                    userName,
+                    password,
+                });
+                alert(`Registration advisor ${name} success!`);
+            } catch (error) {
+                alert('Registration failed. Please try again later!');
+            }
+        } else {
+            try {
+                //'/student/register'
+                await axios.post(props.URL, {
+                    name,
+                    email,
+                    userName,
+                    password,
+                    major
+                });
+                alert(`Registration student ${name} success!`);
+            } catch (error) {
+                alert('Registration failed. Please try again later!');
+            }
         }
-        
+
     }
 
     return (
         <div className="bg-white py-6 sm:py-8 lg:py-12">
             <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-                <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl">Sign Up</h2>
+                <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl">{props.header}</h2>
 
                 <form className="mx-auto max-w-lg rounded-lg border" onSubmit={registerStudent}>
                     <div className="flex flex-col gap-4 p-4 md:p-8">
                         <div>
                             <label htmlFor="YourName" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Your Name</label>
-                            <input name="name" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring" 
-                                    value={name}
-                                    onChange={event => setName(event.target.value)}/>
+                            <input name="name" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+                                value={name}
+                                onChange={event => setName(event.target.value)} />
                         </div>
-                        <div>
-                            <label htmlFor="YourMajor" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Your Major</label>
-                            <input name="major" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring" 
+                        
+                        {!isAdvisor && (
+                            <div>
+                                <label htmlFor="YourMajor" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Your Major</label>
+                                <input name="major" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
                                     value={major}
-                                    onChange={event => setMajor(event.target.value)}/>
-                        </div>
+                                    onChange={event => setMajor(event.target.value)} />
+                            </div>
+                        )}
+
+
 
                         <div>
                             <label htmlFor="YourEmail" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Email</label>
-                            <input name="email" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring" 
-                                    value={email}
-                                    onChange={event => setEmail(event.target.value)}/>
+                            <input name="email" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+                                value={email}
+                                onChange={event => setEmail(event.target.value)} />
                         </div>
 
                         <div>
                             <label htmlFor="YourPassword" className="mb-2 inline-block text-sm text-gray-800 sm:text-base">Password</label>
-                            <input name="password" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring" 
-                                    value={password}
-                                    onChange={event => setPassword(event.target.value)}/>
+                            <input name="password" className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+                                value={password}
+                                onChange={event => setPassword(event.target.value)} />
                         </div>
 
-                        
+
 
                         <button className="block rounded-lg bg-gray-800 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-gray-300 transition duration-100 hover:bg-gray-700 focus-visible:ring active:bg-gray-600 md:text-base">Sign Up</button>
 
