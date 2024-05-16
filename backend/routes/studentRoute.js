@@ -63,8 +63,8 @@ studentRouter.post('/register', async (req, res) => {
 });
 
 //jwt secret to securely transmit message
-const jwtSecret = "a134asd8b8d9d0a89f8b7e72dv2";
-const refreshSecret = "a134aadf9asb81129sdfass2";
+const jwtSecret = "";
+const refreshSecret = "";
 
 studentRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;

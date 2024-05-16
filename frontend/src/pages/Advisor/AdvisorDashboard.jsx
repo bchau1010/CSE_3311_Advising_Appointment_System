@@ -20,7 +20,7 @@ export default function AllocateTime() {
     return (
         <>
             <PersistentDrawerLeft
-                ContextName = "ADVISOR HOME"
+                ContextName = "ADVISOR MAKE AN APPOINTMENT"
                 dashBoardName = "This is Advisor Dashboard"
                 listOfStudentHeader = "This is a list of student">
                 <Typography paragraph>LIST OF ALL SUTDENTS</Typography>
